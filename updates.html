@@ -27,14 +27,6 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .update-box h3 {
-      margin: 0 0 10px;
-    }
-
-    .update-box p {
-      margin: 0 0 10px;
-    }
-
     .new-badge {
       background: #ff0000;
       color: white;
@@ -47,33 +39,32 @@
 </head>
 <body>
   <h2>Latest Updates</h2>
-  <div id="updates-container"></div>
+  <div id="updates"></div>
 
   <script>
-    fetch('updates.json')
+    fetch('data/updates.json')
       .then(response => response.json())
       .then(data => {
-        const container = document.getElementById('updates-container');
-        container.innerHTML = "";
+        const container = document.getElementById('updates');
+        container.innerHTML = '';
 
-        data.forEach(update => {
-          const dateObj = new Date(update.date);
-          const dateStr = dateObj.toLocaleDateString();
-          const daysSince = (Date.now() - dateObj) / (1000 * 60 * 60 * 24);
-          const isNew = daysSince <= 3 ? '<span class="new-badge">🆕 NEW</span>' : "";
+        data.forEach(item => {
+          const date = new Date(item.date);
+          const daysSince = (Date.now() - date) / (1000 * 60 * 60 * 24);
+          const isNew = daysSince <= 3 ? '<span class="new-badge">🆕 NEW</span>' : '';
 
           container.innerHTML += `
             <div class="update-box">
-              <h3>${update.title} ${isNew}</h3>
-              <p>${update.description}</p>
-              <small>📅 ${dateStr}</small>
+              <h3>${item.title} ${isNew}</h3>
+              <p>${item.description}</p>
+              <small>📅 ${date.toLocaleDateString()}</small>
             </div>
           `;
         });
       })
       .catch(error => {
-        document.getElementById("updates-container").innerHTML = "<p>Unable to load updates.</p>";
-        console.error("Failed to load updates.json:", error);
+        document.getElementById('updates').innerText = "Error loading updates.";
+        console.error(error);
       });
   </script>
 </body>

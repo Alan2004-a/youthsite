@@ -1,0 +1,28 @@
+backend:
+  name: github
+  repo: YOUR_USERNAME/YOUR_REPO_NAME
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "updates"
+    label: "Updates"
+    folder: "data/updates"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Description", name: "description", widget: "text" }
+
+  - name: "gallery"
+    label: "Gallery"
+    folder: "data/gallery"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Image", name: "image", widget: "image" }
+      - { label: "Caption", name: "caption", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }

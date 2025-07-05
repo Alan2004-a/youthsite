@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: YOUR_USERNAME/YOUR_REPO_NAME
+  repo: Alan2004-a/youthsite
   branch: main
 
 media_folder: "images"

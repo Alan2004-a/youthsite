@@ -32,17 +32,25 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    nav a {
-      margin: 0 15px;
-      text-decoration: none;
-      color: #0a012e;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
+   nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
 
-    nav a:hover {
-      color: darkorange;
-    }
+nav a {
+  text-decoration: none;
+  color: #0a012e;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: darkorange;
+}
+
 
     .hero {
       text-align: center;

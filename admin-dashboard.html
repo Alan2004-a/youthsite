@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -65,7 +66,7 @@
       <h2>➕ Add New Update</h2>
       <input type="text" id="updateTitle" placeholder="Title" />
       <textarea id="updateDescription" placeholder="Description"></textarea>
-      <button onclick="submitUpdate()">Submit Update</button>
+      <button id="submitUpdateBtn">Submit Update</button>
 
       <hr style="margin: 40px 0;">
 
@@ -94,7 +95,7 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // 🔐 Replace with your actual anon key
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // ✅ Add Update
@@ -138,16 +139,18 @@
       const { data, error } = await supabase.from("updates").select("*").order("date", { ascending: false });
       const list = document.getElementById("updatesList");
       list.innerHTML = '';
-      data.forEach(update => {
-        list.innerHTML += `
-          <div class="entry-box">
-            <strong>${update.title}</strong><br>
-            ${update.description}<br>
-            📅 ${new Date(update.date).toLocaleDateString()}<br>
-            <button class="delete-btn" onclick="deleteUpdate(${update.id})">Delete</button>
-          </div>
-        `;
-      });
+      if (data) {
+        data.forEach(update => {
+          list.innerHTML += `
+            <div class="entry-box">
+              <strong>${update.title}</strong><br>
+              ${update.description}<br>
+              📅 ${new Date(update.date).toLocaleDateString()}<br>
+              <button class="delete-btn" onclick="deleteUpdate(${update.id})">Delete</button>
+            </div>
+          `;
+        });
+      }
     }
 
     // ✅ Load Gallery
@@ -155,16 +158,18 @@
       const { data, error } = await supabase.from("gallery").select("*").order("date", { ascending: false });
       const list = document.getElementById("galleryList");
       list.innerHTML = '';
-      data.forEach(item => {
-        list.innerHTML += `
-          <div class="entry-box">
-            <strong>${item.caption}</strong><br>
-            📅 ${new Date(item.date).toLocaleDateString()}<br>
-            <img src="${item.url}" alt="Image"><br>
-            <button class="delete-btn" onclick="deleteGallery(${item.id}, '${item.url}')">Delete</button>
-          </div>
-        `;
-      });
+      if (data) {
+        data.forEach(item => {
+          list.innerHTML += `
+            <div class="entry-box">
+              <strong>${item.caption}</strong><br>
+              📅 ${new Date(item.date).toLocaleDateString()}<br>
+              <img src="${item.url}" alt="Image"><br>
+              <button class="delete-btn" onclick="deleteGallery(${item.id}, '${item.url}')">Delete</button>
+            </div>
+          `;
+        });
+      }
     }
 
     // ✅ Delete Update
@@ -187,7 +192,10 @@
       loadGallery();
     }
 
-    // 🚀 Initial Load
+    // ✅ Hook the button event
+    document.getElementById("submitUpdateBtn").addEventListener("click", submitUpdate);
+
+    // 🚀 Load everything on page load
     loadUpdates();
     loadGallery();
   </script>

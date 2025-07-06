@@ -12,12 +12,15 @@
       padding: 40px;
     }
     .container {
-      max-width: 600px;
+      max-width: 900px;
       margin: auto;
-      background: white;
+      background: #fff;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #b30000;
     }
     input, textarea, button {
       width: 100%;
@@ -25,6 +28,7 @@
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
+      box-sizing: border-box;
     }
     button {
       background: #b30000;
@@ -34,33 +38,67 @@
     button:hover {
       background: #800000;
     }
+    .section {
+      margin-bottom: 40px;
+    }
+    .entry-box {
+      background: #f9f9f9;
+      margin-top: 10px;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    }
+    .entry-box img {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 6px;
+    }
+    .delete-btn {
+      background: #ff4444;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Add New Update</h2>
-    <input type="text" id="updateTitle" placeholder="Title" />
-    <textarea id="updateDescription" placeholder="Description"></textarea>
-    <button onclick="submitUpdate()">Submit Update</button>
+    <!-- SECTION 1 -->
+    <div class="section">
+      <h2>➕ Add New Update</h2>
+      <input type="text" id="updateTitle" placeholder="Title" />
+      <textarea id="updateDescription" placeholder="Description"></textarea>
+      <button onclick="submitUpdate()">Submit Update</button>
 
-    <hr>
+      <hr style="margin: 40px 0;">
 
-    <h2>Add New Gallery Image</h2>
-    <input type="file" id="galleryImage" />
-    <input type="text" id="imageCaption" placeholder="Caption" />
-    <button onclick="submitGallery()">Submit Image</button>
+      <h2>🖼️ Add New Gallery Image</h2>
+      <input type="file" id="galleryImage" />
+      <input type="text" id="imageCaption" placeholder="Caption" />
+      <button onclick="submitGallery()">Submit Image</button>
+    </div>
 
-    <br><br>
-    <a href="index.html" style="text-decoration: none;"><button>Back to Home</button></a>
+    <!-- SECTION 2 -->
+    <div class="section">
+      <h2>📝 All Updates</h2>
+      <div id="updatesList"></div>
+
+      <hr style="margin: 40px 0;">
+
+      <h2>📸 All Gallery Images</h2>
+      <div id="galleryList"></div>
+    </div>
+
+    <a href="index.html"><button style="margin-top: 20px;">🏠 Back to Home</button></a>
   </div>
 
+  <!-- SCRIPT -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';  // <-- Replace this
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo';  // <-- Replace this
+    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // ✅ Add Update
     async function submitUpdate() {
       const title = document.getElementById("updateTitle").value.trim();
       const description = document.getElementById("updateDescription").value.trim();
@@ -68,32 +106,91 @@
 
       const { error } = await supabase.from("updates").insert([{ title, description, date: new Date() }]);
       if (error) return alert("❌ Error adding update");
-      alert("✅ Update submitted!");
+      alert("✅ Update added!");
       document.getElementById("updateTitle").value = '';
       document.getElementById("updateDescription").value = '';
+      loadUpdates(); // reload updates
     }
 
+    // ✅ Add Gallery Image
     async function submitGallery() {
       const fileInput = document.getElementById("galleryImage");
       const caption = document.getElementById("imageCaption").value.trim();
       const file = fileInput.files[0];
-
-      if (!file || !caption) return alert("Please choose an image and caption");
+      if (!file || !caption) return alert("Choose image + caption");
 
       const filePath = `gallery/${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage.from("gallery").upload(filePath, file);
-
-      if (uploadError) return alert("❌ Image upload failed");
+      if (uploadError) return alert("❌ Upload failed");
 
       const { data: publicUrlData } = supabase.storage.from("gallery").getPublicUrl(filePath);
       const url = publicUrlData.publicUrl;
 
       const { error } = await supabase.from("gallery").insert([{ caption, url, date: new Date() }]);
-      if (error) return alert("❌ Error adding gallery entry");
-      alert("✅ Image submitted!");
+      if (error) return alert("❌ Failed to save gallery entry");
+      alert("✅ Image added!");
       fileInput.value = '';
       document.getElementById("imageCaption").value = '';
+      loadGallery(); // reload gallery
     }
+
+    // ✅ Load Updates
+    async function loadUpdates() {
+      const { data, error } = await supabase.from("updates").select("*").order("date", { ascending: false });
+      const list = document.getElementById("updatesList");
+      list.innerHTML = '';
+      data.forEach(update => {
+        list.innerHTML += `
+          <div class="entry-box">
+            <strong>${update.title}</strong><br>
+            ${update.description}<br>
+            📅 ${new Date(update.date).toLocaleDateString()}<br>
+            <button class="delete-btn" onclick="deleteUpdate(${update.id})">Delete</button>
+          </div>
+        `;
+      });
+    }
+
+    // ✅ Load Gallery
+    async function loadGallery() {
+      const { data, error } = await supabase.from("gallery").select("*").order("date", { ascending: false });
+      const list = document.getElementById("galleryList");
+      list.innerHTML = '';
+      data.forEach(item => {
+        list.innerHTML += `
+          <div class="entry-box">
+            <strong>${item.caption}</strong><br>
+            📅 ${new Date(item.date).toLocaleDateString()}<br>
+            <img src="${item.url}" alt="Image"><br>
+            <button class="delete-btn" onclick="deleteGallery(${item.id}, '${item.url}')">Delete</button>
+          </div>
+        `;
+      });
+    }
+
+    // ✅ Delete Update
+    window.deleteUpdate = async function(id) {
+      if (!confirm("Are you sure?")) return;
+      const { error } = await supabase.from("updates").delete().eq("id", id);
+      if (error) return alert("❌ Delete failed");
+      alert("🗑️ Deleted");
+      loadUpdates();
+    }
+
+    // ✅ Delete Gallery + Storage File
+    window.deleteGallery = async function(id, url) {
+      if (!confirm("Are you sure?")) return;
+      const filename = url.split("/").pop();
+      const { error: delStorageErr } = await supabase.storage.from("gallery").remove([`gallery/${filename}`]);
+      const { error: delDbErr } = await supabase.from("gallery").delete().eq("id", id);
+      if (delStorageErr || delDbErr) return alert("❌ Failed to delete image");
+      alert("🗑️ Image deleted");
+      loadGallery();
+    }
+
+    // 🚀 Initial Load
+    loadUpdates();
+    loadGallery();
   </script>
 </body>
 </html>

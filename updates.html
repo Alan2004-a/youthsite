@@ -2,14 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Updates - Youth Organization</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, red, yellow, white);
+      color: #333;
+    }
+
+    header {
+      background-color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #0a012e;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: darkorange;
+    }
+
+    h2 {
+      text-align: center;
+      color: #b30000;
+      margin-top: 30px;
+    }
+
+    .update-box {
+      background: white;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .update-box h3 {
+      margin: 0;
+    }
+
+    .new-badge {
+      background: red;
+      color: white;
+      font-size: 12px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+
+    footer {
+      background-color: rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9em;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="color: red;">KCYM MANIKKADAVU</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="updates.html">Updates</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <h2>Latest Updates</h2>
+  <div id="updates"></div>
+
+  <footer>
+    &copy; 2025 Youth Organization. All rights reserved.
+  </footer>
+
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co'; // Replace
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // Replace
+    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // Replace with your real anon key
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const updatesContainer = document.getElementById("updates");
@@ -21,20 +104,20 @@
         .order("date", { ascending: false });
 
       if (error) {
-        updatesContainer.innerHTML = "<p>Error loading updates.</p>";
+        updatesContainer.innerHTML = "<p>❌ Failed to load updates</p>";
         return;
       }
 
-      updatesContainer.innerHTML = "";
-      data.forEach((item) => {
-        const date = new Date(item.date);
-        const isNew = (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24) <= 3;
+      data.forEach(update => {
+        const dateObj = new Date(update.date);
+        const daysSince = (Date.now() - dateObj) / (1000 * 60 * 60 * 24);
+        const isNew = daysSince <= 3 ? '<span class="new-badge">🆕</span>' : "";
 
         updatesContainer.innerHTML += `
           <div class="update-box">
-            <h3>${item.title} ${isNew ? '<span class="new-badge">🆕 NEW</span>' : ''}</h3>
-            <p>${item.description}</p>
-            <small>📅 ${date.toLocaleDateString()}</small>
+            <h3>${update.title} ${isNew}</h3>
+            <p>${update.description}</p>
+            <small>📅 ${dateObj.toLocaleDateString()}</small>
           </div>
         `;
       });
@@ -42,36 +125,5 @@
 
     loadUpdates();
   </script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, white, yellow, red);
-      padding: 20px;
-    }
-    h2 {
-      text-align: center;
-      color: #b30000;
-    }
-    .update-box {
-      background: #fff;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 600px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-    .new-badge {
-      background: red;
-      color: white;
-      padding: 3px 6px;
-      font-size: 12px;
-      border-radius: 4px;
-      margin-left: 6px;
-    }
-  </style>
-</head>
-<body>
-  <h2>Latest Updates</h2>
-  <div id="updates">Loading...</div>
 </body>
 </html>

@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -73,7 +72,7 @@
       <h2>🖼️ Add New Gallery Image</h2>
       <input type="file" id="galleryImage" />
       <input type="text" id="imageCaption" placeholder="Caption" />
-      <button onclick="submitGallery()">Submit Image</button>
+      <button id="submitGalleryBtn">Submit Image</button>
     </div>
 
     <!-- SECTION 2 -->
@@ -95,7 +94,7 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // 🔐 Replace with your actual anon key
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // ✅ Add Update
@@ -109,7 +108,7 @@
       alert("✅ Update added!");
       document.getElementById("updateTitle").value = '';
       document.getElementById("updateDescription").value = '';
-      loadUpdates(); // reload updates
+      loadUpdates();
     }
 
     // ✅ Add Gallery Image
@@ -131,7 +130,7 @@
       alert("✅ Image added!");
       fileInput.value = '';
       document.getElementById("imageCaption").value = '';
-      loadGallery(); // reload gallery
+      loadGallery();
     }
 
     // ✅ Load Updates
@@ -192,10 +191,11 @@
       loadGallery();
     }
 
-    // ✅ Hook the button event
+    // ✅ Attach Event Listeners
     document.getElementById("submitUpdateBtn").addEventListener("click", submitUpdate);
+    document.getElementById("submitGalleryBtn").addEventListener("click", submitGallery);
 
-    // 🚀 Load everything on page load
+    // 🚀 Initial Load
     loadUpdates();
     loadGallery();
   </script>

@@ -20,16 +20,25 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
-    nav a {
-      margin: 0 15px;
-      text-decoration: none;
-      color: #b30000;
-      font-weight: bold;
-    }
+   nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
 
-    nav a:hover {
-      color: darkorange;
-    }
+nav a {
+  text-decoration: none;
+  color: #0a012e;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: darkorange;
+}
+
 
     .about-section {
       padding: 50px 20px;

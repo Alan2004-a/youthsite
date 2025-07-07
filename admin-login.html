@@ -3,16 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Login</title>
+  <title>Admin Login - KCYM Manikkadavu</title>
+  <link rel="stylesheet" href="css/style.css">
   <style>
+    @media (max-width: 768px) {
+      nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      nav a {
+        display: block;
+        margin: 10px 0;
+        font-size: 1.1em;
+      }
+
+      .login-container {
+        width: 90%;
+      }
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #4facfe, #00f2fe);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, red, yellow, white);
+      color: #333;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    header {
+      background-color: rgb(255, 255, 255);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      animation: slideDown 0.8s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #0a012e;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: darkorange;
     }
 
     .login-container {
@@ -20,13 +67,21 @@
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      width: 90%;
+      width: 100%;
       max-width: 400px;
+      margin: 40px auto;
+      animation: fadeInUp 1s ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h2 {
       text-align: center;
       margin-bottom: 20px;
+      color: #b30000;
     }
 
     input[type="email"],
@@ -59,9 +114,29 @@
       margin-top: 10px;
       text-align: center;
     }
+
+    footer {
+      background-color: rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9em;
+      margin-top: 40px;
+    }
   </style>
 </head>
 <body>
+
+  <header>
+    <h1 style="color: red;">KCYM MANIKKADAVU</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="updates.html">Updates</a>
+      <a href="admin-login.html">Admin</a>
+    </nav>
+  </header>
+
   <div class="login-container">
     <h2>Admin Login</h2>
     <form id="loginForm">
@@ -72,6 +147,10 @@
     </form>
   </div>
 
+  <footer>
+    &copy; 2025 Youth Organization. All rights reserved.
+  </footer>
+
   <script>
     document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -79,9 +158,8 @@
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      // Simple hardcoded login for demonstration
       if (email === "bosealan94@gmail.com" && password === "kcym@1978") {
-        window.location.href = "admin-dashboard.html"; // Redirect after login
+        window.location.href = "admin-dashboard.html";
       } else {
         document.getElementById("errorMsg").textContent = "Invalid credentials. Please try again.";
       }

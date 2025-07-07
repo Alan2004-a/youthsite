@@ -72,30 +72,22 @@
     <button onclick="checkLogin()">Login</button>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+ <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-const supabase = createClient('your-url', 'your-anon-key');
+  const supabase = createClient('https://uegkonvihawxanfiipgm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo');
 
-const { data: { user } } = await supabase.auth.getUser();
+  // List of allowed admin emails
+  const allowedAdmins = ['alanbose500@gmail.com'];
 
-const allowedAdmins = ['alanbose500@gmail.com'];
+  // Check authentication
+  const { data: { user }, error } = await supabase.auth.getUser();
 
-if (!user || !allowedAdmins.includes(user.email)) {
-  window.location.href = 'admin-login.html';
-}
+  if (error || !user || !allowedAdmins.includes(user.email)) {
+    alert("Access denied. Admins only.");
+    window.location.href = 'admin-login.html'; // Redirect to login
+  }
+</script>
 
-
-    function checkLogin() {
-      const password = document.getElementById("adminPass").value;
-      const secret = "kcymsafe123"; // ✅ Change this if you want
-
-      if (password === secret) {
-        window.location.href = "admin-dashboard.html";
-      } else {
-        alert("❌ Incorrect password!");
-      }
-    }
-  </script>
 </body>
 </html>

@@ -59,7 +59,14 @@
     <button onclick="checkLogin()">Login</button>
   </div>
 
-  <script>
+ <script type="module">
+    const { data: { user } } = await supabase.auth.getUser();
+
+if (!user || user.email !== "alanbose500@gmail.com") {
+  alert("⛔ Access denied");
+  window.location.href = "index.html";
+}
+
     function checkLogin() {
       const password = document.getElementById("adminPass").value;
       const secret = "kcymsafe123"; // ✅ Change this if you want

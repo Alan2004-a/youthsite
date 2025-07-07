@@ -1,10 +1,10 @@
-<!-- admin-login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Login</title>
+  <link rel="stylesheet" href="css/style.css">
   <style>
     @media (max-width: 768px) {
   nav {
@@ -21,44 +21,41 @@
 }
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(to right, white, yellow, red);
+      background: linear-gradient(to right, red, yellow, white);
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
       margin: 0;
     }
 
     .login-box {
-      background: white;
+      background: #fff;
       padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 350px;
       width: 100%;
-    }
-
-    h2 {
+      max-width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       text-align: center;
-      color: #b30000;
+      box-sizing: border-box;
     }
 
-    input {
-      width: 100%;
+    input[type="password"] {
       padding: 10px;
-      margin-top: 12px;
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      box-sizing: border-box;
     }
 
     button {
       margin-top: 15px;
-      width: 100%;
-      padding: 10px;
+      padding: 10px 20px;
       background: #b30000;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
     }
 
@@ -70,38 +67,34 @@
 <body>
   <div class="login-box">
     <h2>Admin Login</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
+    <input type="password" id="adminPass" placeholder="Enter secret password" />
+    <br />
+    <button onclick="checkLogin()">Login</button>
   </div>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co'
-    const supabaseKey = 'YOUR_PUBLIC_ANON_KEY' // replace with your anon key
-    const supabase = createClient(supabaseUrl, supabaseKey)
+const supabase = createClient('your-url', 'your-anon-key');
 
-    async function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+const { data: { user } } = await supabase.auth.getUser();
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+const allowedAdmins = ['admin1@example.com', 'admin2@example.com'];
 
-      if (error) {
-        alert("❌ Login failed: " + error.message);
-        return;
+if (!user || !allowedAdmins.includes(user.email)) {
+  window.location.href = 'admin-login.html';
+}
+
+
+    function checkLogin() {
+      const password = document.getElementById("adminPass").value;
+      const secret = "kcymsafe123"; // ✅ Change this if you want
+
+      if (password === secret) {
+        window.location.href = "admin-dashboard.html";
+      } else {
+        alert("❌ Incorrect password!");
       }
-
-      // ✅ Optional: Allow only specific admin email(s)
-      if (email !== "youradmin@example.com") {
-        alert("⛔ Access denied: Not an admin");
-        await supabase.auth.signOut();
-        return;
-      }
-
-      alert("✅ Login successful!");
-      window.location.href = "admin.html"; // Redirect to admin dashboard
     }
   </script>
 </body>

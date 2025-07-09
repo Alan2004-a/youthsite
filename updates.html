@@ -20,40 +20,72 @@
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
+/* Nav wrapper aligns toggle */
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-  /* Hamburger Toggle */
+/* Hamburger Button */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #b30000;
+}
+
+/* Navbar default (desktop) */
+nav {
+  display: flex;
+  gap: 20px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #0a012e;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+nav a:hover {
+  background-color: darkorange;
+  color: white;
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
   .hamburger {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: #b30000;
-    margin-top: 10px;
+    display: block;
   }
 
-  /* Desktop Nav */
   nav {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+    display: none;
+    flex-direction: column;
+    width: 100%;
     margin-top: 10px;
-    flex-wrap: wrap;
+    background-color: white;
+    padding: 10px 0;
+  }
+
+  nav.show {
+    display: flex;
   }
 
   nav a {
-    text-decoration: none;
-    color: #0a012e;
-    font-weight: bold;
-    padding: 8px 12px;
-    border-radius: 5px;
-    transition: color 0.3s, background-color 0.3s;
+    margin: 10px 20px;
+    font-size: 1.1em;
   }
+}
 
-  nav a:hover {
-    color: white;
-    background-color: darkorange;
-  }
 
   h2 {
     text-align: center;
@@ -154,16 +186,17 @@
 <body>
 
 <header>
-  <h1 style="color: red;">KCYM MANIKKADAVU</h1>
-  <button class="hamburger">☰</button>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="updates.html">Updates</a>
-    <a href="admin-login.html">Admin</a>
-  </nav>
+  <div class="nav-wrapper">
+    <button class="hamburger">☰</button>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="updates.html">Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+  </div>
 </header>
+
 
 
 
@@ -228,6 +261,7 @@ function toggleMenu() {
     nav?.classList.toggle("show");
   });
 </script>
+
 </body>
 </html>
 

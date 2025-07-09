@@ -144,30 +144,39 @@
     &copy; 2025 Youth Organization. All rights reserved.
   </footer>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+ <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo';
-    const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // use anon/public key
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-    async function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+  async function login() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        alert("❌ Login failed: " + error.message);
-      } else {
-        alert("✅ Login successful!");
-        window.location.href = "admin.html";
-      }
+    if (!email || !password) {
+      alert("Please enter both email and password.");
+      return;
     }
-  </script>
+
+    const { error, data } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      alert("❌ Login failed: " + error.message);
+      return;
+    }
+
+    alert("✅ Login successful!");
+    window.location.href = "admin-dashboard.html";
+  }
+
+  window.login = login; // Make it globally accessible
+</script>
+
 
 </body>
 </html>

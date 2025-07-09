@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Updates - Youth Organization</title>
 
-  <style>
+<style>
   body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,76 +16,72 @@
 
   header {
     background-color: white;
-    padding: 20px;
-    text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
-/* Nav wrapper aligns toggle */
-.nav-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  background-color: white;
-  padding: 10px 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
 
-/* Hamburger Button */
-.hamburger {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 26px;
-  cursor: pointer;
-  color: #b30000;
-}
-
-/* Navbar default (desktop) */
-nav {
-  display: flex;
-  gap: 20px;
-}
-
-nav a {
-  text-decoration: none;
-  color: #0a012e;
-  font-weight: bold;
-  padding: 8px 12px;
-  border-radius: 5px;
-  transition: color 0.3s, background-color 0.3s;
-}
-
-nav a:hover {
-  background-color: darkorange;
-  color: white;
-}
-
-/* Mobile View */
-@media (max-width: 768px) {
-  .hamburger {
-    display: block;
-  }
-
-  nav {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 10px;
-    background-color: white;
-    padding: 10px 0;
-  }
-
-  nav.show {
+  /* NAV WRAPPER: flex box with hamburger + links */
+  .nav-wrapper {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    flex-wrap: wrap;
+  }
+
+  /* HAMBURGER BUTTON */
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+    color: #b30000;
+  }
+
+  /* NAVBAR LINKS - Desktop */
+  nav {
+    display: flex;
+    gap: 15px;
   }
 
   nav a {
-    margin: 10px 20px;
-    font-size: 1.1em;
+    text-decoration: none;
+    color: #0a012e;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background 0.3s, color 0.3s;
   }
-}
 
+  nav a:hover {
+    background-color: darkorange;
+    color: white;
+  }
+
+  /* MOBILE STYLES */
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+    }
+
+    nav {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      background-color: white;
+      margin-top: 10px;
+      padding: 10px 0;
+    }
+
+    nav.show {
+      display: flex;
+    }
+
+    nav a {
+      margin: 10px 20px;
+      font-size: 1.1em;
+    }
+  }
 
   h2 {
     text-align: center;
@@ -130,36 +126,6 @@ nav a:hover {
     margin-top: 40px;
   }
 
-  /* Responsive - Mobile */
-  @media (max-width: 768px) {
-    .hamburger {
-      display: block;
-      margin: auto;
-    }
-
-    nav {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      background-color: white;
-      padding: 10px;
-    }
-
-    nav.show {
-      display: flex !important;
-    }
-
-    nav a {
-      margin: 10px 0;
-      font-size: 1.1em;
-    }
-
-    h2 {
-      font-size: 1.6em;
-    }
-  }
-
   @media (max-width: 480px) {
     .entry-box {
       padding: 12px;
@@ -179,6 +145,7 @@ nav a:hover {
     }
   }
 </style>
+
 
 </head>
 
@@ -254,13 +221,13 @@ function toggleMenu() {
 <!-- HTML content here -->
 
 <script>
-  const hamburger = document.querySelector(".hamburger");
-  const nav = document.querySelector("nav");
-
-  hamburger?.addEventListener("click", () => {
-    nav?.classList.toggle("show");
+  const hamburger = document.querySelector('.hamburger');
+  const nav = document.querySelector('nav');
+  hamburger?.addEventListener('click', () => {
+    nav.classList.toggle('show');
   });
 </script>
+
 
 </body>
 </html>

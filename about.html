@@ -32,6 +32,9 @@
     display: none;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+    background-color: white;
+    padding: 10px;
   }
 
   nav.show {
@@ -39,8 +42,11 @@
   }
 
   nav a {
+    display: block;
     margin: 10px 0;
     font-size: 1.1em;
+    color: #0a012e;
+    text-decoration: none;
   }
 }
 
@@ -150,11 +156,9 @@
   </style>
 </head>
 <body>
- <header>
+<header>
   <h1 style="color: red;">KCYM MANIKKADAVU</h1>
-  
-  <button id="toggleMenu" class="hamburger">☰</button>
-
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
   <nav id="navMenu">
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
@@ -163,8 +167,6 @@
     <a href="admin-login.html">Admin</a>
   </nav>
 </header>
-
-
   <div class="about-section">
     <h1>About Our Organization</h1>
     <p>
@@ -188,10 +190,14 @@
     &copy; 2025 Youth Organization. All rights reserved.
   </footer>
   <script>
-  document.getElementById("toggleMenu").addEventListener("click", () => {
-    document.getElementById("navMenu").classList.toggle("show");
-  });
+  function toggleMenu() {
+    const nav = document.getElementById("navMenu");
+    nav.classList.toggle("show");
+  }
+  function toggleMenu() {
+    const nav = document.getElementById("navMenu");
+    nav.classList.toggle("show");
+  }
 </script>
-
 </body>
 </html>

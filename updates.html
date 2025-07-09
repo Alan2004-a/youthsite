@@ -13,6 +13,37 @@
       color: #333;
       animation: fadeIn 0.8s ease-in;
     }
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #b30000;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    margin: auto;
+  }
+
+  nav {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav.show {
+    display: flex;
+  }
+
+  nav a {
+    margin: 10px 0;
+    font-size: 1.1em;
+  }
+}
 
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -129,16 +160,20 @@
 </head>
 <body>
 
-  <header>
-    <h1 style="color: red;">KCYM MANIKKADAVU</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="updates.html">Updates</a>
-      <a href="admin-login.html">Admin</a>
-    </nav>
-  </header>
+ <header>
+  <h1 style="color: red;">KCYM MANIKKADAVU</h1>
+  
+  <button id="toggleMenu" class="hamburger">☰</button>
+
+  <nav id="navMenu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="updates.html">Updates</a>
+    <a href="admin-login.html">Admin</a>
+  </nav>
+</header>
+
 
   <h2>📢 Latest Updates</h2>
   <div class="container" id="updatesList">
@@ -183,6 +218,10 @@
     }
 
     loadUpdates();
+  document.getElementById("toggleMenu").addEventListener("click", () => {
+    document.getElementById("navMenu").classList.toggle("show");
+  });
+
   </script>
 
 </body>

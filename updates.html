@@ -149,14 +149,7 @@
 </style>
 
 </head>
-<script>
-  const hamburger = document.querySelector(".hamburger");
-  const nav = document.querySelector("nav");
 
-  hamburger.addEventListener("click", () => {
-    nav.classList.toggle("show");
-  });
-</script>
 
 <body>
 
@@ -225,6 +218,18 @@ function toggleMenu() {
     nav.classList.toggle("show");
   }
   </script>
+<!-- HTML content here -->
+
+<script>
+  const hamburger = document.querySelector(".hamburger");
+  const nav = document.querySelector("nav");
+
+  hamburger?.addEventListener("click", () => {
+    nav?.classList.toggle("show");
+  });
+</script>
+</body>
+</html>
 
 </body>
 </html>

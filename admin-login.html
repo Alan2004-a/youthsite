@@ -90,15 +90,32 @@
       margin-top: 40px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+   @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2em;
+      }
+
+      nav a {
+        font-size: 1em;
+        padding: 6px 10px;
+      }
     }
 
     @media (max-width: 480px) {
-      .login-container {
-        margin: 40px 20px;
-        padding: 20px;
+      .hero h1 {
+        font-size: 1.7em;
+      }
+
+      .hero p {
+        font-size: 1em;
+      }
+
+      .highlights h2 {
+        font-size: 1.5em;
+      }
+
+      .highlights ul {
+        font-size: 1em;
       }
     }
   </style>

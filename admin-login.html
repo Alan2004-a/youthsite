@@ -115,7 +115,7 @@
     <h2>Admin Login</h2>
     <input type="email" id="email" placeholder="Enter email" required />
     <input type="password" id="password" placeholder="Enter password" required />
-    <button onclick="login()">Login</button>
+<button id="loginBtn">Login</button>
     <div class="message" id="message"></div>
   </div>
 
@@ -124,42 +124,47 @@
   </footer>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // Replace if needed
-    const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // Replace if needed
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-    async function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const message = document.getElementById('message');
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const message = document.getElementById('message');
 
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+    message.textContent = '🔄 Logging in...';
 
-      if (authError) {
-        message.textContent = '❌ ' + authError.message;
-        return;
-      }
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-      // Check if email exists in admins table
-      const { data: admin, error: adminError } = await supabase
-        .from('admins')
-        .select('*')
-        .eq('email', email)
-        .single();
-
-      if (adminError || !admin) {
-        message.textContent = '🚫 Access Denied: Not an admin';
-        return;
-      }
-
-      // Redirect to dashboard
-      window.location.href = 'admin-dashboard.html';
+    if (authError) {
+      message.textContent = '❌ ' + authError.message;
+      return;
     }
-  </script>
+
+    // Check if email is in the admins table
+    const { data: admin, error: adminError } = await supabase
+      .from('admins')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (adminError || !admin) {
+      message.textContent = '🚫 Access Denied: Not an admin';
+      return;
+    }
+
+    message.textContent = '✅ Login successful. Redirecting...';
+    setTimeout(() => {
+      window.location.href = 'admin-dashboard.html';
+    }, 1000);
+  });
+</script>
+
 </body>
 </html>

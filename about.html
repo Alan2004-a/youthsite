@@ -4,57 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About Us - Youth Organization</title>
-  <link rel="stylesheet" href="css/style.css" />
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to top right, red, yellow, white);
+      background: linear-gradient(to bottom right, red, yellow, white);
       color: #333;
     }
-.hamburger {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  color: #b30000;
-  margin-top: 10px;
-}
-
-@media (max-width: 768px) {
-  .hamburger {
-    display: block;
-    margin: auto;
-  }
-
-  nav {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    background-color: white;
-    padding: 10px;
-  }
-
-  nav.show {
-    display: flex;
-  }
-
-  nav a {
-    display: block;
-    margin: 10px 0;
-    font-size: 1.1em;
-    color: #0a012e;
-    text-decoration: none;
-  }
-}
 
     header {
-      background-color: rgba(255, 255, 255, 0.85);
-      padding: 20px;
+      background-color: white;
+      padding: 20px 0 10px;
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
     nav {
@@ -67,11 +29,11 @@
 
     nav a {
       text-decoration: none;
-      color: #b30000;
+      color: #0a012e;
       font-weight: bold;
       padding: 8px 12px;
       border-radius: 5px;
-      transition: background-color 0.3s, color 0.3s;
+      transition: color 0.3s, background-color 0.3s;
     }
 
     nav a:hover {
@@ -79,14 +41,12 @@
       background-color: darkorange;
     }
 
-    .about-section {
-      padding: 50px 20px;
+    .about {
       max-width: 900px;
       margin: auto;
-      background-color: rgba(255, 255, 255, 0.7);
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 1s ease-in;
+      padding: 40px 20px;
+      text-align: center;
+      animation: fadeIn 1.2s ease-in-out;
     }
 
     @keyframes fadeIn {
@@ -94,18 +54,17 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .about-section h1 {
-      text-align: center;
-      margin-bottom: 20px;
+    .about h2 {
+      font-size: 2.2em;
       color: #b30000;
-      font-size: 2.5em;
+      margin-bottom: 20px;
     }
 
-    .about-section p {
+    .about p {
       font-size: 1.1em;
       line-height: 1.7;
-      margin-bottom: 20px;
-      text-align: justify;
+      margin-bottom: 15px;
+      color: #333;
     }
 
     footer {
@@ -113,53 +72,32 @@
       text-align: center;
       padding: 15px;
       font-size: 0.9em;
-      margin-top: 50px;
+      margin-top: 40px;
     }
 
-    /* Responsive styles */
     @media (max-width: 768px) {
-      .about-section {
-        padding: 30px 15px;
+      .about h2 {
+        font-size: 1.8em;
       }
 
-      .about-section h1 {
-        font-size: 2em;
-      }
-
-      .about-section p {
+      nav a {
         font-size: 1em;
+        padding: 6px 10px;
       }
     }
 
     @media (max-width: 480px) {
-      .about-section {
-        padding: 20px 10px;
-      }
-
-      .about-section h1 {
-        font-size: 1.6em;
-      }
-
-      .about-section p {
-        font-size: 0.95em;
-      }
-
-      nav {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      nav a {
-        font-size: 1.1em;
+      .about p {
+        font-size: 1em;
       }
     }
   </style>
 </head>
 <body>
+
 <header>
   <h1 style="color: red;">KCYM MANIKKADAVU</h1>
-  <button class="hamburger" onclick="toggleMenu()">☰</button>
-  <nav id="navMenu">
+  <nav>
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="gallery.html">Gallery</a>
@@ -167,37 +105,27 @@
     <a href="admin-login.html">Admin</a>
   </nav>
 </header>
-  <div class="about-section">
-    <h1>About Our Organization</h1>
-    <p>
-      Founded with a passion for community empowerment, our youth organization has been
-      a symbol of unity and inspiration for the younger generation in the region. We focus on 
-      fostering leadership, promoting social responsibility, and preserving cultural heritage.
-    </p>
-    <p>
-      Through dynamic events, skill-building programs, and service-driven missions,
-      we aim to create a platform where every youth can discover their potential and
-      contribute meaningfully to society. Our colors — red, yellow, and white — reflect
-      the energy, hope, and peace that define our vision.
-    </p>
-    <p>
-      We believe that youth are the backbone of a better tomorrow, and we are here to
-      support, guide, and celebrate their journey.
-    </p>
-  </div>
 
-  <footer>
-    &copy; 2025 Youth Organization. All rights reserved.
-  </footer>
-  <script>
-  function toggleMenu() {
-    const nav = document.getElementById("navMenu");
-    nav.classList.toggle("show");
-  }
-  function toggleMenu() {
-    const nav = document.getElementById("navMenu");
-    nav.classList.toggle("show");
-  }
-</script>
+<div class="about">
+  <h2>About Our Organization</h2>
+  <p>
+    KCYM Manikkadavu is a vibrant and youth-centric organization committed to fostering leadership,
+    social responsibility, and personal growth among young individuals in our community.
+  </p>
+  <p>
+    We strive to create platforms that empower the youth to express their talents,
+    raise awareness on social and environmental issues, and build a better future through
+    collective action, compassion, and innovation.
+  </p>
+  <p>
+    From organizing cultural events and workshops to engaging in voluntary service,
+    our mission is to unite and uplift the spirit of youth across all walks of life.
+  </p>
+</div>
+
+<footer>
+  &copy; 2025 Youth Organization. All rights reserved.
+</footer>
+
 </body>
 </html>

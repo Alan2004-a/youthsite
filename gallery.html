@@ -33,7 +33,7 @@
       font-weight: bold;
       padding: 8px 12px;
       border-radius: 5px;
-      transition: color 0.3s, background-color 0.3s;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     nav a:hover {
@@ -49,11 +49,10 @@
 
     .gallery-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
       padding: 20px;
-      max-width: 1100px;
-      margin: auto;
+      box-sizing: border-box;
     }
 
     .gallery-item {
@@ -62,6 +61,11 @@
       padding: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.03);
     }
 
     .gallery-item img {
@@ -69,15 +73,12 @@
       height: auto;
       border-radius: 8px;
       object-fit: contain;
+      max-height: 300px;
     }
 
     .caption {
       font-weight: bold;
       margin-top: 8px;
-    }
-
-    small {
-      color: #555;
     }
 
     .new-badge {
@@ -96,73 +97,69 @@
       font-size: 0.9em;
       margin-top: 40px;
     }
-
-    @media (max-width: 768px) {
-      nav a {
-        font-size: 1em;
-        padding: 6px 10px;
-      }
-    }
   </style>
 </head>
 <body>
 
-<header>
-  <h1 style="color: red;">KCYM MANIKKADAVU</h1>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="updates.html">Updates</a>
-    <a href="admin-login.html">Admin</a>
-  </nav>
-</header>
+  <header>
+    <h1 style="color: red;">KCYM MANIKKADAVU</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="updates.html">Updates</a>
+      <a href="admin-login.html">Admin</a>
+    </nav>
+  </header>
 
-<h2>📸 Gallery</h2>
-<div class="gallery-container" id="gallery"></div>
+  <h2>Gallery</h2>
+  <div class="gallery-container" id="gallery"></div>
 
-<footer>
-  &copy; 2025 Youth Organization. All rights reserved.
-</footer>
+  <footer>
+    &copy; 2025 Youth Organization. All rights reserved.
+  </footer>
 
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const supabase = createClient(
-    'https://uegkonvihawxanfiipgm.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ...' // your real key
-  );
+    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // Replace with your actual anon/public key
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const galleryContainer = document.getElementById("gallery");
+    const galleryContainer = document.getElementById("gallery");
 
-  async function loadGallery() {
-    const { data, error } = await supabase
-      .from("gallery")
-      .select("*")
-      .order("date", { ascending: false });
+    async function loadGallery() {
+      const { data, error } = await supabase
+        .from("gallery")
+        .select("*")
+        .order("date", { ascending: false });
 
-    if (error) {
-      galleryContainer.innerHTML = "<p>❌ Failed to load gallery images</p>";
-      return;
+      if (error) {
+        galleryContainer.innerHTML = "<p>❌ Failed to load gallery images</p>";
+        console.error("Supabase error:", error);
+        return;
+      }
+
+      galleryContainer.innerHTML = '';
+
+      data.forEach(item => {
+        const dateObj = new Date(item.date);
+        const daysSince = (Date.now() - dateObj) / (1000 * 60 * 60 * 24);
+        const isNew = daysSince <= 3 ? '<span class="new-badge">🆕</span>' : "";
+
+        const imgBox = `
+          <div class="gallery-item">
+            <img src="${item.url}" alt="Gallery Image">
+            <div class="caption">${item.caption} ${isNew}</div>
+            <small>📅 ${dateObj.toLocaleDateString()}</small>
+          </div>
+        `;
+
+        galleryContainer.innerHTML += imgBox;
+      });
     }
 
-    data.forEach(item => {
-      const dateObj = new Date(item.date);
-      const daysSince = (Date.now() - dateObj) / (1000 * 60 * 60 * 24);
-      const isNew = daysSince <= 3 ? '<span class="new-badge">🆕</span>' : "";
-
-      galleryContainer.innerHTML += `
-        <div class="gallery-item">
-          <img src="${item.url}" alt="Image">
-          <div class="caption">${item.caption} ${isNew}</div>
-          <small>📅 ${dateObj.toLocaleDateString()}</small>
-        </div>
-      `;
-    });
-  }
-
-  loadGallery();
-</script>
-
+    loadGallery();
+  </script>
 </body>
 </html>

@@ -20,6 +20,15 @@
       text-align: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       animation: slideDown 0.8s ease-out;
+      position: relative;
+    }
+
+    header img {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 50px;
     }
 
     @keyframes slideDown {
@@ -29,7 +38,7 @@
 
     nav {
       display: flex;
-      flex-wrap: wrap; /* 🔄 allows wrapping */
+      flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
       margin-top: 10px;
@@ -116,6 +125,11 @@
         font-size: 1em;
         padding: 6px 10px;
       }
+
+      header img {
+        height: 40px;
+        left: 10px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -140,7 +154,8 @@
 <body>
 
   <header>
-    <h1 style="color: red;">KCYM MANIKKADAVU</h1>
+    <img src="images/logo.png" alt="Logo" />
+    <h1 style="color: red;">KCYM MANIKKADAVU FORANE</h1>
     <nav>
       <a href="index.html">Home</a>
       <a href="about.html">About</a>

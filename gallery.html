@@ -12,12 +12,18 @@
       color: #333;
     }
 
-    header {
-      background-color: white;
-      padding: 20px 0 10px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
+   @keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+header {
+  background-color: white;
+  padding: 20px 0 10px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  animation: slideDown 0.8s ease-out;
+}
 
     nav {
       display: flex;

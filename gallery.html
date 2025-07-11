@@ -68,20 +68,21 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    .image-carousel {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      gap: 10px;
-      padding: 10px 0;
-    }
+   .image-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 10px;
+  padding: 10px 0;
+}
 
-    .image-carousel img {
-      height: 200px;
-      border-radius: 8px;
-      scroll-snap-align: start;
-      object-fit: cover;
-    }
+.image-carousel img {
+  height: 200px;
+  border-radius: 8px;
+  scroll-snap-align: start;
+  object-fit: cover;
+}
+
 
     .caption {
       font-weight: bold;
@@ -143,35 +144,40 @@
     const galleryContainer = document.getElementById("gallery");
 
     async function loadGallery() {
-      const { data, error } = await supabase
-        .from("gallery")
-        .select("*")
-        .order("date", { ascending: false });
+  const { data, error } = await supabase
+    .from("gallery")
+    .select("*")
+    .order("date", { ascending: false });
 
-      if (error) {
-        galleryContainer.innerHTML = "<p>❌ Failed to load gallery images</p>";
-        console.error("Supabase error:", error);
-        return;
-      }
+  if (error) {
+    galleryContainer.innerHTML = "<p>❌ Failed to load gallery images</p>";
+    console.error("Supabase error:", error);
+    return;
+  }
 
-      galleryContainer.innerHTML = '';
+  galleryContainer.innerHTML = '';
 
-      data.forEach(item => {
-       const imageElements = item.url.map(u => `<img src="${u}" style="height: 150px; margin-right: 10px; border-radius: 5px;">`).join('');
-const imgBox = `
-  <div class="gallery-item">
-    <div style="display: flex; overflow-x: auto; padding-bottom: 10px;">
-      ${imageElements}
-    </div>
-    <div class="caption">${item.caption} ${isNew}</div>
-    <small>📅 ${dateObj.toLocaleDateString()}</small>
-  </div>
-`;
+  data.forEach(item => {
+    const dateObj = new Date(item.date);
+    const daysSince = (Date.now() - dateObj) / (1000 * 60 * 60 * 24);
+    const isNew = daysSince <= 3 ? '<span class="new-badge">🆕</span>' : "";
 
+    const imageElements = item.url.map(u => `<img src="${u}" alt="Image">`).join('');
 
-        galleryContainer.innerHTML += eventBox;
-      });
-    }
+    const imgBox = `
+      <div class="gallery-item">
+        <div class="image-carousel">
+          ${imageElements}
+        </div>
+        <div class="caption">${item.caption} ${isNew}</div>
+        <small>📅 ${dateObj.toLocaleDateString()}</small>
+      </div>
+    `;
+
+    galleryContainer.innerHTML += imgBox;
+  });
+}
+
 
     loadGallery();
   </script>

@@ -96,6 +96,13 @@
         padding: 6px 10px;
       }
     }
+.poster-img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 10px 0;
+}
 
     @media (max-width: 480px) {
       h2 {
@@ -158,14 +165,20 @@
       }
 
       data.forEach(update => {
-        container.innerHTML += `
-          <div class="entry-box">
-            <strong>${update.title}</strong>
-            <p>${update.description}</p>
-            <small>📅 ${new Date(update.date).toLocaleDateString()}</small>
-          </div>
-        `;
-      });
+  const posterImg = update.poster_url
+    ? `<img src="${update.poster_url}" alt="Poster" class="poster-img" />`
+    : "";
+
+  container.innerHTML += `
+    <div class="entry-box">
+      <strong>${update.title}</strong>
+      ${posterImg}
+      <p>${update.description}</p>
+      <small>📅 ${new Date(update.date).toLocaleDateString()}</small>
+    </div>
+  `;
+});
+
     }
 
     loadUpdates();

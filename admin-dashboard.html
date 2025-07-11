@@ -97,9 +97,16 @@
     
     <!-- SECTION 1 -->
     <div class="section">
-      <h2>➕ Add New Update</h2>
-      <input type="text" id="updateTitle" placeholder="Title" />
-      <textarea id="updateDescription" placeholder="Description"></textarea>
+     <h2>➕ Add New Update</h2>
+<input type="text" id="updateTitle" placeholder="Title" />
+<textarea id="updateDescription" placeholder="Description"></textarea>
+
+<!-- ✅ Add this -->
+<input type="file" id="updatePoster" accept="image/*" />
+<small>Poster is optional</small>
+
+<button id="submitUpdateBtn">Submit Update</button>
+
       <button id="submitUpdateBtn">Submit Update</button>
 
       <hr style="margin: 40px 0;">
@@ -130,17 +137,39 @@
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     async function submitUpdate() {
-      const title = document.getElementById("updateTitle").value.trim();
-      const description = document.getElementById("updateDescription").value.trim();
-      if (!title || !description) return alert("Fill all fields");
+  const title = document.getElementById("updateTitle").value.trim();
+  const description = document.getElementById("updateDescription").value.trim();
+  const posterFile = document.getElementById("updatePoster").files[0];
 
-      const { error } = await supabase.from("updates").insert([{ title, description, date: new Date() }]);
-      if (error) return alert("❌ Error adding update");
-      alert("✅ Update added!");
-      document.getElementById("updateTitle").value = '';
-      document.getElementById("updateDescription").value = '';
-      loadUpdates();
+  if (!title || !description) return alert("Fill all fields");
+
+  let poster_url = null;
+
+  if (posterFile) {
+    const path = `posters/${Date.now()}_${posterFile.name}`;
+    const { error: uploadError } = await supabase.storage.from("posters").upload(path, posterFile);
+    if (uploadError) {
+      console.error(uploadError);
+      return alert("❌ Failed to upload poster");
     }
+
+    const { data: publicUrlData } = supabase.storage.from("posters").getPublicUrl(path);
+    poster_url = publicUrlData.publicUrl;
+  }
+
+  const { error } = await supabase.from("updates").insert([
+    { title, description, date: new Date(), poster_url }
+  ]);
+
+  if (error) return alert("❌ Error adding update");
+
+  alert("✅ Update added!");
+  document.getElementById("updateTitle").value = '';
+  document.getElementById("updateDescription").value = '';
+  document.getElementById("updatePoster").value = '';
+  loadUpdates();
+}
+
 
     async function submitGallery() {
       const fileInput = document.getElementById("galleryImage");

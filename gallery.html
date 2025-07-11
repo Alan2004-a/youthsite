@@ -149,6 +149,8 @@
     .select("*")
     .order("date", { ascending: false });
 
+  const galleryContainer = document.getElementById("gallery");
+
   if (error) {
     galleryContainer.innerHTML = "<p>❌ Failed to load gallery images</p>";
     console.error("Supabase error:", error);
@@ -159,16 +161,14 @@
 
   data.forEach(item => {
     const dateObj = new Date(item.date);
-    const daysSince = (Date.now() - dateObj) / (1000 * 60 * 60 * 24);
-    const isNew = daysSince <= 3 ? '<span class="new-badge">🆕</span>' : "";
+    const isNew = (Date.now() - dateObj) / (1000 * 60 * 60 * 24) <= 3
+      ? '<span class="new-badge">🆕</span>' : '';
 
-    const imageElements = item.url.map(u => `<img src="${u}" alt="Image">`).join('');
+    const imageList = item.url.map(u => `<img src="${u}" alt="Gallery" />`).join('');
 
     const imgBox = `
       <div class="gallery-item">
-        <div class="image-carousel">
-          ${imageElements}
-        </div>
+        <div class="image-carousel">${imageList}</div>
         <div class="caption">${item.caption} ${isNew}</div>
         <small>📅 ${dateObj.toLocaleDateString()}</small>
       </div>

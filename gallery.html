@@ -159,12 +159,21 @@
 
   galleryContainer.innerHTML = '';
 
-  data.forEach(item => {
+   data.forEach(item => {
     const dateObj = new Date(item.date);
     const isNew = (Date.now() - dateObj) / (1000 * 60 * 60 * 24) <= 3
       ? '<span class="new-badge">🆕</span>' : '';
 
-    const imageList = item.url.map(u => `<img src="${u}" alt="Gallery" />`).join('');
+    let urls = [];
+    try {
+      urls = Array.isArray(item.url) ? item.url : JSON.parse(item.url);
+    } catch (e) {
+      urls = [item.url];
+    }
+
+    const imageList = urls
+      .map(u => `<img src="${u}" alt="Gallery" />`)
+      .join('');
 
     const imgBox = `
       <div class="gallery-item">
@@ -175,11 +184,12 @@
     `;
 
     galleryContainer.innerHTML += imgBox;
-  });
-}
+  }); // ← This closes the forEach loop
 
+} // ← This closes loadGallery function
 
-    loadGallery();
+loadGallery(); // ✅ This calls the function
+
   </script>
 </body>
 </html>

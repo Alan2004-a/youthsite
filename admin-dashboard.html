@@ -111,7 +111,7 @@
       <hr style="margin: 40px 0;">
 
       <h2>🖼️ Add New Gallery Image</h2>
-      <input type="file" id="galleryImage" />
+<input type="file" id="galleryImage" multiple />
       <input type="text" id="imageCaption" placeholder="Caption" />
       <button id="submitGalleryBtn">Submit Image</button>
     </div>
@@ -171,25 +171,34 @@
 
 
     async function submitGallery() {
-      const fileInput = document.getElementById("galleryImage");
-      const caption = document.getElementById("imageCaption").value.trim();
-      const file = fileInput.files[0];
-      if (!file || !caption) return alert("Choose image + caption");
+  const fileInput = document.getElementById("galleryImage");
+  const caption = document.getElementById("imageCaption").value.trim();
+  const files = fileInput.files;
+  if (files.length === 0 || !caption) return alert("Select at least one image and add caption");
 
-      const filePath = `gallery/${Date.now()}_${file.name}`;
-      const { error: uploadError } = await supabase.storage.from("gallery").upload(filePath, file);
-      if (uploadError) return alert("❌ Upload failed");
+  const imageUrls = [];
 
-      const { data: publicUrlData } = supabase.storage.from("gallery").getPublicUrl(filePath);
-      const url = publicUrlData.publicUrl;
-
-      const { error } = await supabase.from("gallery").insert([{ caption, url, date: new Date() }]);
-      if (error) return alert("❌ Failed to save gallery entry");
-      alert("✅ Image added!");
-      fileInput.value = '';
-      document.getElementById("imageCaption").value = '';
-      loadGallery();
+  for (const file of files) {
+    const path = `gallery/${Date.now()}_${file.name}`;
+    const { error: uploadError } = await supabase.storage.from("gallery").upload(path, file);
+    if (uploadError) {
+      console.error("Upload failed for:", file.name, uploadError);
+      continue;
     }
+    const { data: publicUrlData } = supabase.storage.from("gallery").getPublicUrl(path);
+    imageUrls.push(publicUrlData.publicUrl);
+  }
+
+  if (imageUrls.length === 0) return alert("❌ All uploads failed");
+
+  const { error } = await supabase.from("gallery").insert([{ caption, url: imageUrls, date: new Date() }]);
+  if (error) return alert("❌ Failed to save gallery entry");
+
+  alert("✅ Images added to gallery!");
+  fileInput.value = '';
+  document.getElementById("imageCaption").value = '';
+  loadGallery();
+}
 
     async function loadUpdates() {
       const { data } = await supabase.from("updates").select("*").order("date", { ascending: false });

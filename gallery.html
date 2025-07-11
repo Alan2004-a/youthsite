@@ -157,21 +157,17 @@
       galleryContainer.innerHTML = '';
 
       data.forEach(item => {
-        const dateObj = new Date(item.date);
-        const daysSince = (Date.now() - dateObj) / (1000 * 60 * 60 * 24);
-        const isNew = daysSince <= 3 ? '<span class="new-badge">🆕</span>' : "";
+       const imageElements = item.url.map(u => `<img src="${u}" style="height: 150px; margin-right: 10px; border-radius: 5px;">`).join('');
+const imgBox = `
+  <div class="gallery-item">
+    <div style="display: flex; overflow-x: auto; padding-bottom: 10px;">
+      ${imageElements}
+    </div>
+    <div class="caption">${item.caption} ${isNew}</div>
+    <small>📅 ${dateObj.toLocaleDateString()}</small>
+  </div>
+`;
 
-        const imagesHTML = item.urls.map(url => `
-          <img src="${url}" alt="Gallery Image">
-        `).join('');
-
-        const eventBox = `
-          <div class="gallery-item">
-            <div class="image-carousel">${imagesHTML}</div>
-            <div class="caption">${item.caption} ${isNew}</div>
-            <small>📅 ${dateObj.toLocaleDateString()}</small>
-          </div>
-        `;
 
         galleryContainer.innerHTML += eventBox;
       });

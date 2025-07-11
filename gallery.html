@@ -12,18 +12,18 @@
       color: #333;
     }
 
-   @keyframes slideDown {
-  from { transform: translateY(-100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
 
-header {
-  background-color: white;
-  padding: 20px 0 10px;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  animation: slideDown 0.8s ease-out;
-}
+    header {
+      background-color: white;
+      padding: 20px 0 10px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      animation: slideDown 0.8s ease-out;
+    }
 
     nav {
       display: flex;
@@ -54,11 +54,11 @@ header {
     }
 
     .gallery-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
       padding: 20px;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
     }
 
     .gallery-item {
@@ -66,25 +66,26 @@ header {
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
-      transition: transform 0.3s ease;
     }
 
-    .gallery-item:hover {
-      transform: scale(1.03);
+    .image-carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 10px;
+      padding: 10px 0;
     }
 
-    .gallery-item img {
-      width: 100%;
-      height: auto;
+    .image-carousel img {
+      height: 200px;
       border-radius: 8px;
-      object-fit: contain;
-      max-height: 300px;
+      scroll-snap-align: start;
+      object-fit: cover;
     }
 
     .caption {
       font-weight: bold;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .new-badge {
@@ -103,38 +104,16 @@ header {
       font-size: 0.9em;
       margin-top: 40px;
     }
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2em;
-      }
 
+    @media (max-width: 768px) {
       nav a {
         font-size: 1em;
         padding: 6px 10px;
       }
     }
-
-    @media (max-width: 480px) {
-      .hero h1 {
-        font-size: 1.7em;
-      }
-
-      .hero p {
-        font-size: 1em;
-      }
-
-      .highlights h2 {
-        font-size: 1.5em;
-      }
-
-      .highlights ul {
-        font-size: 1em;
-      }
-    }
   </style>
 </head>
 <body>
-
   <header>
     <h1 style="color: red;">KCYM<br> MANIKKADAVU FORANE</h1>
     <nav>
@@ -156,9 +135,10 @@ header {
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabaseUrl = 'https://uegkonvihawxanfiipgm.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'; // Replace with your actual anon/public key
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(
+      'https://uegkonvihawxanfiipgm.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'
+    );
 
     const galleryContainer = document.getElementById("gallery");
 
@@ -181,15 +161,19 @@ header {
         const daysSince = (Date.now() - dateObj) / (1000 * 60 * 60 * 24);
         const isNew = daysSince <= 3 ? '<span class="new-badge">🆕</span>' : "";
 
-        const imgBox = `
+        const imagesHTML = item.urls.map(url => `
+          <img src="${url}" alt="Gallery Image">
+        `).join('');
+
+        const eventBox = `
           <div class="gallery-item">
-            <img src="${item.url}" alt="Gallery Image">
+            <div class="image-carousel">${imagesHTML}</div>
             <div class="caption">${item.caption} ${isNew}</div>
             <small>📅 ${dateObj.toLocaleDateString()}</small>
           </div>
         `;
 
-        galleryContainer.innerHTML += imgBox;
+        galleryContainer.innerHTML += eventBox;
       });
     }
 

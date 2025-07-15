@@ -118,6 +118,63 @@
         padding: 6px 10px;
       }
     }
+     .carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+  }
+
+  .slide {
+    flex: 0 0 100%;
+    max-width: 100%;
+    scroll-snap-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .slide img {
+    width: 100%;
+    max-height: 250px;
+    border-radius: 10px;
+    object-fit: contain;
+  }
+
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.7);
+    border: none;
+    font-size: 2rem;
+    padding: 0 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255,255,255,0.9);
+  }
+
+  .prev-btn {
+    left: 10px;
+  }
+
+  .next-btn {
+    right: 10px;
+  }
+
+  .counter {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #555;
+  }
   </style>
 </head>
 <body>
@@ -140,65 +197,78 @@
   </footer>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient(
-      'https://uegkonvihawxanfiipgm.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'
-    );
-
-    const galleryContainer = document.getElementById("gallery");
-
-    async function loadGallery() {
-  const { data, error } = await supabase
-    .from("gallery")
-    .select("*")
-    .order("date", { ascending: false });
+  const supabase = createClient(
+    'https://uegkonvihawxanfiipgm.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ2tvbnZpaGF3eGFuZmlpcGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NzcxNTQsImV4cCI6MjA2NzM1MzE1NH0.gZew0FG5BaVOi6oUKxOjRFSiraRezBZT5iNzDxyhEeo'
+  );
 
   const galleryContainer = document.getElementById("gallery");
 
-  if (error) {
-    galleryContainer.innerHTML = "<p>❌ Failed to load gallery images</p>";
-    console.error("Supabase error:", error);
-    return;
-  }
+  async function loadGallery() {
+    const { data, error } = await supabase
+      .from("gallery")
+      .select("*")
+      .order("date", { ascending: false });
 
-  galleryContainer.innerHTML = '';
-
-   data.forEach(item => {
-    const dateObj = new Date(item.date);
-    const isNew = (Date.now() - dateObj) / (1000 * 60 * 60 * 24) <= 3
-      ? '<span class="new-badge">🆕</span>' : '';
-
-    let urls = [];
-    try {
-      urls = Array.isArray(item.url) ? item.url : JSON.parse(item.url);
-    } catch (e) {
-      urls = [item.url];
+    if (error) {
+      galleryContainer.innerHTML = "<p>❌ Failed to load gallery images</p>";
+      console.error("Supabase error:", error);
+      return;
     }
 
-    const imageList = urls
-  .map(u => `<img src="${u}" alt="Gallery" />`)
-  .join('');
+    galleryContainer.innerHTML = '';
 
-const imgBox = `
-  <div class="gallery-item">
-    <div class="image-carousel">
-      ${imageList}
-    </div>
-    <div class="caption">${item.caption} ${isNew}</div>
-    <small>📅 ${dateObj.toLocaleDateString()}</small>
-  </div>
-`;
+    data.forEach((item, index) => {
+      const dateObj = new Date(item.date);
+      const isNew = (Date.now() - dateObj) / (1000 * 60 * 60 * 24) <= 3
+        ? '<span class="new-badge">🆕</span>' : '';
 
+      let urls = [];
+      try {
+        urls = Array.isArray(item.url) ? item.url : JSON.parse(item.url);
+      } catch {
+        urls = [item.url];
+      }
 
-    galleryContainer.innerHTML += imgBox;
-  }); // ← This closes the forEach loop
+      const galleryId = `gallery-${index}`;
+      const slides = urls.map(u => `<div class="slide"><img src="${u}" alt="Gallery" /></div>`).join('');
+      const imgBox = `
+        <div class="gallery-item">
+          <div class="carousel-wrapper">
+            <button class="nav-btn prev-btn" onclick="moveSlide('${galleryId}', -1)">❮</button>
+            <div class="carousel-track" id="${galleryId}">${slides}</div>
+            <button class="nav-btn next-btn" onclick="moveSlide('${galleryId}', 1)">❯</button>
+          </div>
+          <div class="counter" id="${galleryId}-counter">1/${urls.length}</div>
+          <div class="caption">${item.caption} ${isNew}</div>
+          <small>📅 ${dateObj.toLocaleDateString()}</small>
+        </div>
+      `;
 
-} // ← This closes loadGallery function
+      galleryContainer.innerHTML += imgBox;
+      slideStates[galleryId] = { current: 0, total: urls.length };
+    });
+  }
 
-loadGallery(); // ✅ This calls the function
+  const slideStates = {};
 
-  </script>
+  window.moveSlide = (id, direction) => {
+    const state = slideStates[id];
+    if (!state) return;
+
+    state.current = (state.current + direction + state.total) % state.total;
+
+    const track = document.getElementById(id);
+    track.style.transform = `translateX(-${state.current * 100}%)`;
+
+    const counter = document.getElementById(`${id}-counter`);
+    counter.textContent = `${state.current + 1}/${state.total}`;
+  };
+
+  loadGallery();
+</script>
+
 </body>
 </html>

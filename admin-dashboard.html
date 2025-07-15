@@ -34,16 +34,16 @@
         width: 100%;
         box-sizing: border-box;
       }
-.entry-box {
-  overflow-x: auto;
-  white-space: nowrap;
-}
+      .entry-box {
+        overflow-x: auto;
+        white-space: nowrap;
+      }
 
-.entry-box img {
-  max-height: 150px;
-  margin-right: 10px;
-  display: inline-block;
-}
+      .entry-box img {
+        max-height: 150px;
+        margin-right: 10px;
+        display: inline-block;
+      }
 
       h2 {
         color: #b30000;
@@ -102,28 +102,27 @@
         cursor: pointer;
       }
       .entry-box img {
-  max-height: 120px;
-  margin: 8px;
-  display: inline-block;
-  border-radius: 6px;
-  cursor: pointer;
-}
+        max-height: 120px;
+        margin: 8px;
+        display: inline-block;
+        border-radius: 6px;
+        cursor: pointer;
+      }
 
-.image-row {
-  display: flex;
-  overflow-x: auto;
-  gap: 10px;
-  padding: 10px 0;
-}
+      .image-row {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 10px 0;
+      }
 
-.image-row::-webkit-scrollbar {
-  height: 8px;
-}
-.image-row::-webkit-scrollbar-thumb {
-  background: #aaa;
-  border-radius: 4px;
-}
-
+      .image-row::-webkit-scrollbar {
+        height: 8px;
+      }
+      .image-row::-webkit-scrollbar-thumb {
+        background: #aaa;
+        border-radius: 4px;
+      }
     </style>
   </head>
   <body>
@@ -147,7 +146,7 @@
         <hr style="margin: 40px 0" />
 
         <h2>🖼️ Add New Gallery Image</h2>
-<input type="file" id="galleryImage" accept="image/*" multiple />
+        <input type="file" id="galleryImage" accept="image/*" multiple />
         <input type="text" id="imageCaption" placeholder="Caption" />
         <button id="submitGalleryBtn">Submit Image</button>
       </div>
@@ -213,51 +212,55 @@
       }
 
       async function submitGallery() {
-  const fileInput = document.getElementById("galleryImage");
-  const caption = document.getElementById("imageCaption").value.trim();
-  const files = fileInput.files;
+        const fileInput = document.getElementById("galleryImage");
+        const caption = document.getElementById("imageCaption").value.trim();
+        const files = fileInput.files;
 
-  if (files.length === 0 || !caption) {
-    return alert("❌ Select at least one image and provide a caption.");
-  }
+        if (files.length === 0 || !caption) {
+          return alert("❌ Select at least one image and provide a caption.");
+        }
 
-  const urls = [];
+        const urls = [];
 
-  for (const file of files) {
-    const filePath = `gallery/${Date.now()}_${file.name}`;
-    const { data: uploadData, error: uploadError } = await supabase.storage.from("gallery").upload(filePath, file);
+        for (const file of files) {
+          const filePath = `gallery/${Date.now()}_${file.name}`;
+          const { data: uploadData, error: uploadError } =
+            await supabase.storage.from("gallery").upload(filePath, file);
 
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      continue;
-    }
+          if (uploadError) {
+            console.error("Upload error:", uploadError);
+            continue;
+          }
 
-    const { data: publicUrlData } = supabase.storage.from("gallery").getPublicUrl(filePath);
-    urls.push(publicUrlData.publicUrl);
-  }
+          const { data: publicUrlData } = supabase.storage
+            .from("gallery")
+            .getPublicUrl(filePath);
+          urls.push(publicUrlData.publicUrl);
+        }
 
-  if (urls.length === 0) {
-    return alert("❌ No files uploaded successfully.");
-  }
+        if (urls.length === 0) {
+          return alert("❌ No files uploaded successfully.");
+        }
 
-  // Insert into gallery table
-  const { error: dbError } = await supabase.from("gallery").insert([{
-    caption,
-    url: urls, // since url is of type text[]
-    date: new Date().toISOString()
-  }]);
+        // Insert into gallery table
+        const { error: dbError } = await supabase.from("gallery").insert([
+          {
+            caption,
+            url: urls, // since url is of type text[]
+            date: new Date().toISOString(),
+          },
+        ]);
 
-  if (dbError) {
-    console.error("DB insert error:", dbError);
-    return alert("❌ Failed to save entry in DB.");
-  }
+        if (dbError) {
+          console.error("DB insert error:", dbError);
+          return alert("❌ Failed to save entry in DB.");
+        }
 
-  alert("✅ Images added successfully!");
-  fileInput.value = '';
-  document.getElementById("imageCaption").value = '';
-  loadGallery();
-}
-
+        alert("✅ Images added successfully!");
+        fileInput.value = "";
+        document.getElementById("imageCaption").value = "";
+        loadGallery();
+      }
 
       async function loadUpdates() {
         const { data } = await supabase
@@ -283,81 +286,84 @@
       }
 
       async function loadGallery() {
-  const { data } = await supabase
-    .from("gallery")
-    .select("*")
-    .order("date", { ascending: false });
+        const { data } = await supabase
+          .from("gallery")
+          .select("*")
+          .order("date", { ascending: false });
 
-  const list = document.getElementById("galleryList");
-  list.innerHTML = "";
+        const list = document.getElementById("galleryList");
+        list.innerHTML = "";
 
-  if (data) {
-    data.forEach((item) => {
-      const imageRow = item.url
-        .map((url, index) => `
-          <div style="text-align:center">
-            <img src="${url}" alt="Image">
-            <button class="delete-btn" onclick="deleteSingleImage(${item.id}, '${url}')">🗑️ Delete</button>
-          </div>
-        `)
-        .join("");
+        if (data) {
+          data.forEach((item) => {
+            let urls = [];
+            try {
+              urls = Array.isArray(item.url) ? item.url : JSON.parse(item.url);
+            } catch (e) {
+              urls = [item.url];
+            }
 
-      list.innerHTML += `
+            const imagesHTML = urls
+              .map((u) => `<img src="${u}" alt="Image">`)
+              .join("");
+
+            list.innerHTML += `
         <div class="entry-box">
           <strong>${item.caption}</strong><br>
           📅 ${new Date(item.date).toLocaleDateString()}<br>
-          <div class="image-row">${imageRow}</div>
+          <div style="overflow-x:auto; white-space:nowrap;">${imagesHTML}</div>
+          <button class="delete-btn" onclick='deleteGallery(${
+            item.id
+          }, ${JSON.stringify(urls)})'>Delete</button>
         </div>
       `;
-    });
-  }
-}
-window.deleteSingleImage = async function (id, url) {
-  if (!confirm("Delete this image?")) return;
+          });
+        }
+      }
 
-  const filename = url.split("/").pop();
+      window.deleteSingleImage = async function (id, url) {
+        if (!confirm("Delete this image?")) return;
 
-  // Remove from storage
-  const { error: storageError } = await supabase.storage
-    .from("gallery")
-    .remove([`gallery/${filename}`]);
+        const filename = url.split("/").pop();
 
-  if (storageError) {
-    console.error("Storage delete error", storageError);
-    return alert("❌ Failed to delete image from storage.");
-  }
+        // Remove from storage
+        const { error: storageError } = await supabase.storage
+          .from("gallery")
+          .remove([`gallery/${filename}`]);
 
-  // Get the current record to update the URL array
-  const { data, error } = await supabase
-    .from("gallery")
-    .select("*")
-    .eq("id", id)
-    .single();
+        if (storageError) {
+          console.error("Storage delete error", storageError);
+          return alert("❌ Failed to delete image from storage.");
+        }
 
-  if (error || !data) {
-    console.error("Record fetch error", error);
-    return alert("❌ Failed to fetch gallery entry.");
-  }
+        // Get the current record to update the URL array
+        const { data, error } = await supabase
+          .from("gallery")
+          .select("*")
+          .eq("id", id)
+          .single();
 
-  const updatedUrls = data.url.filter((u) => u !== url);
+        if (error || !data) {
+          console.error("Record fetch error", error);
+          return alert("❌ Failed to fetch gallery entry.");
+        }
 
-  if (updatedUrls.length === 0) {
-    // Delete entire row if no image left
-    await supabase.from("gallery").delete().eq("id", id);
-  } else {
-    // Update with remaining images
-    await supabase
-      .from("gallery")
-      .update({ url: updatedUrls })
-      .eq("id", id);
-  }
+        const updatedUrls = data.url.filter((u) => u !== url);
 
-  alert("🗑️ Image deleted");
-  loadGallery();
-};
+        if (updatedUrls.length === 0) {
+          // Delete entire row if no image left
+          await supabase.from("gallery").delete().eq("id", id);
+        } else {
+          // Update with remaining images
+          await supabase
+            .from("gallery")
+            .update({ url: updatedUrls })
+            .eq("id", id);
+        }
 
-
-     
+        alert("🗑️ Image deleted");
+        loadGallery();
+      };
 
       window.deleteGallery = async function (id, url) {
         if (!confirm("Are you sure?")) return;

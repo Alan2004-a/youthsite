@@ -365,21 +365,55 @@
         loadGallery();
       };
 
-      window.deleteGallery = async function (id, url) {
-        if (!confirm("Are you sure?")) return;
-        const filename = url.split("/").pop();
-        const { error: delStorageErr } = await supabase.storage
-          .from("gallery")
-          .remove([`gallery/${filename}`]);
-        const { error: delDbErr } = await supabase
-          .from("gallery")
-          .delete()
-          .eq("id", id);
-        if (delStorageErr || delDbErr)
-          return alert("❌ Failed to delete image");
-        alert("🗑️ Image deleted");
-        loadGallery();
-      };
+     
+window.deleteGallery = async function (id, urls) {
+  if (!confirm("Are you sure you want to delete this gallery entry?")) return;
+
+  let filenames = [];
+
+  try {
+    if (typeof urls === 'string') {
+      urls = JSON.parse(urls);
+    }
+
+    if (!Array.isArray(urls)) {
+      urls = [urls];
+    }
+
+    filenames = urls.map(u => {
+      const parts = u.split("/gallery/");
+      return parts.length > 1 ? `gallery/${parts[1]}` : null;
+    }).filter(Boolean);
+
+    if (filenames.length) {
+      const { error: storageErr } = await supabase.storage
+        .from("gallery")
+        .remove(filenames);
+      if (storageErr) {
+        console.error("Storage deletion error:", storageErr);
+        return alert("❌ Failed to delete image(s) from storage.");
+      }
+    }
+
+    const { error: dbError } = await supabase
+      .from("gallery")
+      .delete()
+      .eq("id", id);
+
+    if (dbError) {
+      console.error("Database deletion error:", dbError);
+      return alert("❌ Failed to delete entry from database.");
+    }
+
+    alert("✅ Gallery entry deleted.");
+    loadGallery();
+
+  } catch (err) {
+    console.error("Error during deletion:", err);
+    alert("❌ Something went wrong while deleting.");
+  }
+};
+
 
       document
         .getElementById("submitUpdateBtn")

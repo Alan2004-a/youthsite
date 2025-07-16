@@ -191,6 +191,8 @@
   </header>
 
   <h2>Gallery</h2>
+  <div id="loading" style="text-align:center; padding:40px; font-size:1.2em;">Loading...</div>
+
   <div class="gallery-container" id="gallery"></div>
 <!-- Fullscreen Modal Viewer -->
 <div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
@@ -271,6 +273,7 @@
 
     const counter = document.getElementById(`${id}-counter`);
     counter.textContent = `${state.current + 1}/${state.total}`;
+    
   };
 
   loadGallery();
@@ -300,6 +303,14 @@
       modalImg.src = "";
     }, 200);
   };
+  const loading = document.getElementById("loading");
+loading.style.display = "block";
+
+const { data, error } = await supabase.from("gallery").select("*");
+
+// hide loader when done
+loading.style.display = "none";
+
 </script>
 
 

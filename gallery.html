@@ -192,6 +192,11 @@
 
   <h2>Gallery</h2>
   <div class="gallery-container" id="gallery"></div>
+<!-- Fullscreen Modal Viewer -->
+<div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+  <img id="modalImage" src="" style="max-width:90%; max-height:90%; border-radius:10px; box-shadow:0 0 30px rgba(0,0,0,0.5); transition: transform 0.4s ease;" />
+  <span id="closeModal" style="position:absolute; top:20px; right:30px; font-size:30px; color:white; cursor:pointer;">&times;</span>
+</div>
 
   <footer>
     &copy; 2025 Youth Organization. All rights reserved.
@@ -269,6 +274,32 @@
   };
 
   loadGallery();
+  // Expand image in modal on click
+document.addEventListener("click", function (e) {
+  if (e.target.tagName === "IMG" && e.target.closest(".image-carousel, .image-row, .entry-box")) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+
+    modal.style.display = "flex";
+    modalImg.src = e.target.src;
+    modalImg.style.transform = "scale(0.8)";
+    setTimeout(() => {
+      modalImg.style.transform = "scale(1)";
+    }, 10);
+  }
+});
+
+document.getElementById("closeModal").onclick = function () {
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  modalImg.style.transform = "scale(0.8)";
+  setTimeout(() => {
+    modal.style.display = "none";
+    modalImg.src = "";
+  }, 200);
+};
+
 </script>
 
 </body>

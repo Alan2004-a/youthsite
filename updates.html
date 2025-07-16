@@ -138,6 +138,8 @@
   </header>
 
   <h2>📢 Latest Updates</h2>
+  <div id="loading" style="text-align:center; padding:40px; font-size:1.2em;">Loading...</div>
+
   <div class="container" id="updatesList">
     <!-- Updates will be loaded here by script -->
   </div>
@@ -183,6 +185,14 @@
     </div>
   `;
 });
+const loading = document.getElementById("loading");
+loading.style.display = "block";
+
+const { data, error } = await supabase.from("gallery").select("*");
+
+// hide loader when done
+loading.style.display = "none";
+
 
     }
 

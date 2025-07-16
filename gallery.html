@@ -274,33 +274,34 @@
   };
 
   loadGallery();
-  // Expand image in modal on click
-document.addEventListener("click", function (e) {
-  if (e.target.tagName === "IMG" && e.target.closest(".image-carousel, .image-row, .entry-box")) {
+
+  // ✅ Image Modal Viewer Functionality
+  document.addEventListener("click", function (e) {
+    if (e.target.tagName === "IMG" && e.target.closest(".slide")) {
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+
+      modal.style.display = "flex";
+      modalImg.src = e.target.src;
+      modalImg.style.transform = "scale(0.8)";
+      setTimeout(() => {
+        modalImg.style.transform = "scale(1)";
+      }, 10);
+    }
+  });
+
+  document.getElementById("closeModal").onclick = function () {
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("modalImage");
 
-    modal.style.display = "flex";
-    modalImg.src = e.target.src;
     modalImg.style.transform = "scale(0.8)";
     setTimeout(() => {
-      modalImg.style.transform = "scale(1)";
-    }, 10);
-  }
-});
-
-document.getElementById("closeModal").onclick = function () {
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImage");
-
-  modalImg.style.transform = "scale(0.8)";
-  setTimeout(() => {
-    modal.style.display = "none";
-    modalImg.src = "";
-  }, 200);
-};
-
+      modal.style.display = "none";
+      modalImg.src = "";
+    }, 200);
+  };
 </script>
+
 
 </body>
 </html>

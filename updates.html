@@ -185,13 +185,6 @@
     </div>
   `;
 });
-const loading = document.getElementById("loading");
-loading.style.display = "block";
-
-const { data, error } = await supabase.from("gallery").select("*");
-
-// hide loader when done
-loading.style.display = "none";
 
 
     }
@@ -222,6 +215,13 @@ document.getElementById("closePosterModal").onclick = function () {
     modalImg.src = "";
   }, 200);
 };
+const loading = document.getElementById("loading");
+loading.style.display = "block";
+
+const { data, error } = await supabase.from("gallery").select("*");
+
+// hide loader when done
+loading.style.display = "none";
 
   </script>
 
